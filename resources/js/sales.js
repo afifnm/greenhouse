@@ -22,10 +22,23 @@ function recalcTotal() {
     }
 }
 
+function reindexRows() {
+    document.querySelectorAll('.sale-row').forEach((row, index) => {
+        row.querySelectorAll('[name]').forEach(el => {
+            el.name = el.name.replace(/sale_items\[\d+\]/, 'sale_items[' + index + ']');
+        });
+    });
+}
+
 function removeRow(btn) {
     const rows = document.querySelectorAll('.sale-row');
-    if (rows.length <= 1) return;
+    if (rows.length <= 1) {
+        // Clear fields instead of removing
+        rows[0]?.querySelectorAll('input, select').forEach(el => el.value = '');
+        return;
+    }
     btn.closest('tr').remove();
+    reindexRows();
     recalcTotal();
 }
 
@@ -39,6 +52,7 @@ function addRow() {
         el.name = el.name.replace('[N]', '[' + idx + ']');
     });
     tbody.appendChild(clone);
+    recalcTotal();
 }
 
 // Expose to onclick attributes in the template
@@ -64,6 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = btn.closest('tr').nextElementSibling;
             if (row?.classList.contains('detail-row')) {
                 row.classList.toggle('hidden');
+                // Rotate arrow
+                const arrow = btn.querySelector('.detail-arrow');
+                if (arrow) arrow.style.transform = row.classList.contains('hidden') ? '' : 'rotate(180deg)';
             }
         });
     });

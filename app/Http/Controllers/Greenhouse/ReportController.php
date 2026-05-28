@@ -4,14 +4,20 @@ namespace App\Http\Controllers\Greenhouse;
 
 use App\Http\Controllers\Controller;
 use App\Models\Greenhouse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    public function show(Greenhouse $greenhouse)
+    public function show(Request $request, Greenhouse $greenhouse)
     {
+        $from = $request->query('from');
+        $to = $request->query('to');
+
         $treeStats = DB::table('trees')
             ->where('greenhouse_id', $greenhouse->id)
+            ->when($from, fn($q) => $q->whereDate('created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('created_at', '<=', $to))
             ->selectRaw('
                 COUNT(*) as total,
                 SUM(CASE WHEN status = "alive" THEN 1 ELSE 0 END) as alive,
@@ -23,6 +29,8 @@ class ReportController extends Controller
             ->join('trees', 'fruits.tree_id', '=', 'trees.id')
             ->where('trees.greenhouse_id', $greenhouse->id)
             ->where('trees.status', 'alive')
+            ->when($from, fn($q) => $q->whereDate('fruits.created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('fruits.created_at', '<=', $to))
             ->selectRaw('
                 COUNT(*) as total,
                 SUM(CASE WHEN fruits.condition = "good" THEN 1 ELSE 0 END) as good,
@@ -39,6 +47,8 @@ class ReportController extends Controller
         $treesByVariety = DB::table('trees')
             ->leftJoin('melon_varieties', 'trees.melon_variety_id', '=', 'melon_varieties.id')
             ->where('trees.greenhouse_id', $greenhouse->id)
+            ->when($from, fn($q) => $q->whereDate('trees.created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('trees.created_at', '<=', $to))
             ->selectRaw('
                 COALESCE(melon_varieties.name, "Tanpa Varietas") as variety_name,
                 COUNT(trees.id) as total_trees,
@@ -54,6 +64,8 @@ class ReportController extends Controller
             ->leftJoin('melon_varieties', 'trees.melon_variety_id', '=', 'melon_varieties.id')
             ->where('trees.greenhouse_id', $greenhouse->id)
             ->where('trees.status', 'alive')
+            ->when($from, fn($q) => $q->whereDate('fruits.created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('fruits.created_at', '<=', $to))
             ->selectRaw('
                 COALESCE(melon_varieties.name, "Tanpa Varietas") as variety_name,
                 COUNT(fruits.id) as total_fruits,
@@ -69,12 +81,13 @@ class ReportController extends Controller
             ->orderByDesc('total_fruits')
             ->get();
 
-        // Weight by grade
         $weightByGrade = DB::table('fruits')
             ->join('trees', 'fruits.tree_id', '=', 'trees.id')
             ->where('trees.greenhouse_id', $greenhouse->id)
             ->where('trees.status', 'alive')
             ->whereNotNull('fruits.weight')
+            ->when($from, fn($q) => $q->whereDate('fruits.created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('fruits.created_at', '<=', $to))
             ->selectRaw('
                 fruits.grade,
                 COUNT(*) as count,
@@ -84,13 +97,14 @@ class ReportController extends Controller
             ->groupBy('fruits.grade')
             ->get();
 
-        // Weight by variety and grade (matrix)
         $weightByVarietyGrade = DB::table('fruits')
             ->join('trees', 'fruits.tree_id', '=', 'trees.id')
             ->leftJoin('melon_varieties', 'trees.melon_variety_id', '=', 'melon_varieties.id')
             ->where('trees.greenhouse_id', $greenhouse->id)
             ->where('trees.status', 'alive')
             ->whereNotNull('fruits.weight')
+            ->when($from, fn($q) => $q->whereDate('fruits.created_at', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('fruits.created_at', '<=', $to))
             ->selectRaw('
                 COALESCE(melon_varieties.name, "Tanpa Varietas") as variety_name,
                 fruits.grade,
@@ -139,7 +153,9 @@ class ReportController extends Controller
             'fruitsByVariety',
             'weightByGrade',
             'weightByVarietyGrade',
-            'topVariety'
+            'topVariety',
+            'from',
+            'to'
         ));
     }
 }

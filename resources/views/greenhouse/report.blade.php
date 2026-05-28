@@ -30,6 +30,41 @@
         </div>
     </div>
 
+    <!-- Filter Tanggal -->
+    <!-- <div class="bg-white rounded-xl p-4 shadow-sm border border-stone-100 mb-6">
+        <form method="GET" class="flex flex-wrap items-end gap-3">
+            <div>
+                <label class="block text-xs font-semibold text-stone-500 mb-1">Dari Tanggal</label>
+                <input type="date" name="from" value="{{ $from ?? '' }}"
+                    class="text-sm border border-stone-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-stone-500 mb-1">Sampai Tanggal</label>
+                <input type="date" name="to" value="{{ $to ?? '' }}"
+                    class="text-sm border border-stone-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
+            </div>
+            <button type="submit"
+                class="px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold transition-colors">
+                Filter
+            </button>
+            @if($from || $to)
+                <a href="{{ request()->url() }}"
+                    class="px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-600 text-sm font-semibold transition-colors">
+                    Reset
+                </a>
+            @endif
+            @if($from || $to)
+                <span class="text-xs text-stone-400 self-center ml-1">
+                    Menampilkan data
+                    @if($from && $to)dari {{ \Carbon\Carbon::parse($from)->translatedFormat('d M Y') }} – {{ \Carbon\Carbon::parse($to)->translatedFormat('d M Y') }}
+                    @elseif($from)sampai {{ \Carbon\Carbon::parse($from)->translatedFormat('d M Y') }}
+                    @else{{ $to ? 'hingga ' . \Carbon\Carbon::parse($to)->translatedFormat('d M Y') : '' }}
+                    @endif
+                </span>
+            @endif
+        </form>
+    </div> -->
+
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-stone-100 flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-stone-50 text-stone-600 flex items-center justify-center shrink-0">

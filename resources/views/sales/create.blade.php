@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Penjualan Baru')
+@section('title', 'Penjualan Baru - ' . $greenhouse->name)
 
 @section('content')
 <div class="max-w-3xl mx-auto px-4 pt-6 pb-8">
@@ -9,9 +9,10 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-lg font-bold text-stone-800">Penjualan Baru</h1>
-                <p class="text-xs text-stone-400 font-mono">{{ now()->translatedFormat('d F Y') }}</p>
+                <p class="text-xs text-stone-400 font-mono">{{ $greenhouse->name }} · {{ now()->translatedFormat('d F Y') }}</p>
             </div>
-            <a href="{{ route('sales.index') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-stone-100 text-stone-600 text-sm font-medium hover:bg-stone-200 transition-colors">
+            <a href="{{ route('sales.greenhouse', $greenhouse) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-stone-100 text-stone-600 text-sm font-medium hover:bg-stone-200 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 Kembali
             </a>
@@ -19,7 +20,7 @@
     </div>
 
     <!-- Form -->
-    <form method="POST" action="{{ route('sales.store') }}" class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+    <form method="POST" action="{{ route('sales.store', $greenhouse) }}" class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
         @csrf
 
         <!-- Buyer Name -->
@@ -163,78 +164,5 @@
         </td>
     </tr>
 </template>
-
-@push('scripts')
-<script>
-    const formatRupiah = (value) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            maximumFractionDigits: 0,
-        }).format(value || 0);
-    };
-
-    const calculateSalesTotal = () => {
-        let grandTotal = 0;
-
-        document.querySelectorAll('.sale-row').forEach((row) => {
-            const weight = parseFloat(row.querySelector('[data-weight]')?.value || 0);
-            const price = parseFloat(row.querySelector('[data-price]')?.value || 0);
-            const subtotal = weight * price;
-
-            row.querySelector('.subtotal-display').textContent = formatRupiah(subtotal);
-            grandTotal += subtotal;
-        });
-
-        document.getElementById('grand-total').textContent = formatRupiah(grandTotal);
-    };
-
-    const reindexSaleRows = () => {
-        document.querySelectorAll('.sale-row').forEach((row, index) => {
-            row.querySelectorAll('select, input').forEach((field) => {
-                field.name = field.name.replace(/sale_items\[\d+|sale_items\[N/, `sale_items[${index}`);
-            });
-        });
-    };
-
-    const removeRow = (button) => {
-        const rows = document.querySelectorAll('.sale-row');
-
-        if (rows.length === 1) {
-            const row = rows[0];
-            row.querySelectorAll('select, input').forEach((field) => field.value = '');
-        } else {
-            button.closest('.sale-row').remove();
-        }
-
-        reindexSaleRows();
-        calculateSalesTotal();
-    };
-
-    window.removeRow = removeRow;
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const body = document.getElementById('sale-items-body');
-        const template = document.getElementById('row-template');
-        const addRowButton = document.getElementById('add-row-btn');
-
-        body.addEventListener('input', (event) => {
-            if (event.target.matches('[data-weight], [data-price]')) {
-                calculateSalesTotal();
-            }
-        });
-
-        addRowButton.addEventListener('click', () => {
-            const index = body.querySelectorAll('.sale-row').length;
-            const html = template.innerHTML.replaceAll('sale_items[N]', `sale_items[${index}]`);
-
-            body.insertAdjacentHTML('beforeend', html);
-            calculateSalesTotal();
-        });
-
-        calculateSalesTotal();
-    });
-</script>
-@endpush
 
 @endsection

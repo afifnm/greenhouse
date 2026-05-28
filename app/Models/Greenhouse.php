@@ -19,6 +19,11 @@ class Greenhouse extends Model
         return $this->hasMany(Tree::class);
     }
 
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withTimestamps();

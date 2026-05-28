@@ -36,15 +36,20 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Sales (kasir) — admin only
-    Route::middleware(['role:admin'])->prefix('sales')->name('sales.')->group(function () {
+    Route::prefix('sales')->name('sales.')->group(function () {
         Route::get('/', [SaleController::class, 'index'])->name('index');
-        Route::get('/create', [SaleController::class, 'create'])->name('create');
-        Route::post('/', [SaleController::class, 'store'])->name('store');
+        Route::middleware(['gh.access'])->group(function () {
+            Route::get('/greenhouse/{greenhouse}', [SaleController::class, 'greenhouse'])->name('greenhouse');
+            Route::get('/greenhouse/{greenhouse}/create', [SaleController::class, 'create'])->name('create');
+            Route::post('/greenhouse/{greenhouse}', [SaleController::class, 'store'])->name('store');
+        });
         Route::get('/{sale}', [SaleController::class, 'show'])->name('show');
+        Route::get('/{sale}/print', [SaleController::class, 'print'])->name('print');
         Route::delete('/{sale}', [SaleController::class, 'destroy'])->name('destroy');
+        Route::get('/greenhouse/{greenhouse}/report', [SaleController::class, 'report'])->name('report');
     });
 
-    // Manager routes - Greenhouse management
+    // Note: /greenhouse/{gh}/report is managed by sales, NOT greenhouse
     Route::middleware(['gh.access'])->group(function () {
         Route::get('/greenhouse/{greenhouse}', function (Greenhouse $greenhouse) {
             $greenhouse->loadCount(['trees', 'trees as alive_trees_count' => fn($q) => $q->where('status', 'alive')]);

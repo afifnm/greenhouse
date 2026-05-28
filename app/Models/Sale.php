@@ -9,7 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Sale extends Model
 {
-    protected $fillable = ['user_id', 'buyer_name', 'total'];
+    protected $fillable = ['greenhouse_id', 'user_id', 'buyer_name', 'total'];
+
+    public function greenhouse(): BelongsTo
+    {
+        return $this->belongsTo(Greenhouse::class);
+    }
 
     public function user(): BelongsTo
     {
