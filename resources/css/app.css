@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+    color-scheme: light;
+}
+
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background-color: #0f172a;
+    color: #e7e5e4;
+}
+
+html.dark .bg-white {
+    background-color: #1c1917;
+}
+
+html.dark .bg-stone-50 {
+    background-color: #292524;
+}
+
+html.dark .bg-stone-100 {
+    background-color: #44403c;
+}
+
+html.dark .bg-emerald-50 {
+    background-color: rgba(6, 78, 59, 0.35);
+}
+
+html.dark .bg-emerald-100 {
+    background-color: rgba(6, 95, 70, 0.5);
+}
+
+html.dark .bg-red-50 {
+    background-color: rgba(127, 29, 29, 0.35);
+}
+
+html.dark .bg-red-100 {
+    background-color: rgba(127, 29, 29, 0.5);
+}
+
+html.dark .bg-amber-50 {
+    background-color: rgba(120, 53, 15, 0.35);
+}
+
+html.dark .bg-amber-100 {
+    background-color: rgba(120, 53, 15, 0.5);
+}
+
+html.dark .bg-blue-100,
+html.dark .bg-sky-50 {
+    background-color: rgba(30, 64, 175, 0.35);
+}
+
+html.dark .border-stone-50,
+html.dark .border-stone-100,
+html.dark .border-stone-200 {
+    border-color: #44403c;
+}
+
+html.dark .border-emerald-100,
+html.dark .border-emerald-200 {
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+html.dark .border-red-200 {
+    border-color: rgba(248, 113, 113, 0.35);
+}
+
+html.dark .border-amber-100 {
+    border-color: rgba(251, 191, 36, 0.35);
+}
+
+html.dark .text-stone-800,
+html.dark .text-stone-700,
+html.dark .text-stone-600 {
+    color: #e7e5e4;
+}
+
+html.dark .text-stone-500,
+html.dark .text-stone-400 {
+    color: #a8a29e;
+}
+
+html.dark .text-stone-300 {
+    color: #78716c;
+}
+
+html.dark .text-emerald-700,
+html.dark .text-emerald-600 {
+    color: #34d399;
+}
+
+html.dark .text-emerald-500 {
+    color: #6ee7b7;
+}
+
+html.dark .text-red-600,
+html.dark .text-red-500,
+html.dark .text-red-400 {
+    color: #f87171;
+}
+
+html.dark .text-amber-900,
+html.dark .text-amber-800,
+html.dark .text-amber-700 {
+    color: #fbbf24;
+}
+
+html.dark .text-blue-700,
+html.dark .text-sky-700 {
+    color: #93c5fd;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+    background-color: #292524;
+    border-color: #57534e;
+    color: #f5f5f4;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #78716c;
+}
+
+html.dark .shadow-sm,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+    box-shadow: none;
+}
+
+html.dark .hover\:bg-stone-50:hover,
+html.dark .hover\:bg-stone-100:hover {
+    background-color: #44403c;
+}
+
+html.dark .hover\:bg-emerald-50:hover,
+html.dark .hover\:bg-emerald-100:hover {
+    background-color: rgba(6, 95, 70, 0.65);
+}
+
+html.dark .hover\:bg-red-100:hover {
+    background-color: rgba(127, 29, 29, 0.65);
+}
