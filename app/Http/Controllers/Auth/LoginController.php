@@ -26,7 +26,12 @@ class LoginController extends Controller
             'password' => $password,
         ];
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Paksa remember=true untuk WebView/APK agar tidak auto-logout
+        $remember = $request->boolean('remember')
+            || $request->boolean('_webview')
+            || str_contains($request->userAgent() ?? '', '; wv)'); // Android WebView UA marker
+
+        if (!Auth::attempt($credentials, $remember)) {
             throw ValidationException::withMessages([
                 'login' => ['Email, nomor HP, atau password salah.'],
             ]);

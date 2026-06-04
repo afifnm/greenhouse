@@ -25,3 +25,7 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Capacitor mobile build output
+/mobile-dist
+.env.mobile

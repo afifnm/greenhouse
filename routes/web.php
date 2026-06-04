@@ -2,15 +2,17 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Models\Greenhouse;
 use App\Http\Controllers\Admin\GreenhouseController as AdminGreenhouseController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\MelonVarietyController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Greenhouse\TreeController;
 use App\Http\Controllers\Greenhouse\FruitController;
 use App\Http\Controllers\Greenhouse\MaterialRequestController;
 use App\Http\Controllers\Greenhouse\ReportController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SaleController;
-use App\Models\Greenhouse;
 use Illuminate\Support\Facades\Route;
 
 // Public
@@ -23,8 +25,17 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Settings
+    Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
+    Route::put('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
+
     // Admin routes
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('greenhouses', AdminGreenhouseController::class)->except(['show']);
         Route::get('greenhouses/{greenhouse}', [AdminGreenhouseController::class, 'show'])->name('greenhouses.show');
         Route::get('greenhouses/{greenhouse}/managers', [AdminGreenhouseController::class, 'managers'])->name('greenhouses.managers');
@@ -32,7 +43,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('users', AdminUserController::class);
 
-        Route::resource('varieties', MelonVarietyController::class);
+        Route::resource('varieties', MelonVarietyController::class)->except(['show']);
+
+        // Settings
+        Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
     });
 
     // Sales (kasir) — admin only
@@ -83,4 +98,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/', fn() => redirect()->route('dashboard'));
+});
+
+// Fallback for authenticated users
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
+    Route::put('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
+
 });

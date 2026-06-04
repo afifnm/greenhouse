@@ -37,7 +37,7 @@ function removeRow(btn) {
         rows[0]?.querySelectorAll('input, select').forEach(el => el.value = '');
         return;
     }
-    btn.closest('tr').remove();
+    btn.closest('.sale-row').remove();
     reindexRows();
     recalcTotal();
 }

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             DemoDataSeeder::class,
             GreenhouseTreeSeeder::class,
             MaterialRequestSeeder::class,
+            SaleSeeder::class,
         ]);
     }
 }

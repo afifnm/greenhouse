@@ -21,15 +21,41 @@
     </div>
 
     <!-- Tree Status Card -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100 mb-4">
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 mb-5">
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl {{ $tree->status === 'alive' ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-500' }} flex items-center justify-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22V11m0 0c-2.76 0-5-2.24-5-5V4h2c2.76 0 5 2.24 5 5v2zm0 0c2.76 0 5-2.24 5-5V4h-2c-2.76 0-5 2.24-5 5v2zM5 22h14"/></svg>
                 </div>
-                <div>
+                <div class="flex-1">
                     <p class="text-sm font-bold text-stone-800">Status: {{ $tree->status === 'alive' ? 'Hidup 🌱' : 'Mati ✕' }}</p>
                     <p class="text-xs text-stone-400">Varietas: {{ $tree->variety?->name ?? 'Belum diatur' }}</p>
+                    @if($tree->status === 'alive')
+                    @php
+                        $total = $tree->fruits()->count();
+                        $good = $tree->fruits()->where('condition', 'good')->count();
+                        $rotten = $tree->fruits()->where('condition', 'rotten')->count();
+                        $gradeA = $tree->fruits()->where('grade', 'A')->count();
+                    @endphp
+                    <div class="flex gap-4 mt-2 text-xs">
+                        <div class="flex items-center gap-1">
+                            <span class="text-stone-400">Total:</span>
+                            <span class="font-bold text-stone-700">{{ $total }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-stone-400">Bagus:</span>
+                            <span class="font-bold text-emerald-700">{{ $good }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-stone-400">Busuk:</span>
+                            <span class="font-bold text-red-600">{{ $rotten }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-stone-400">Grade A:</span>
+                            <span class="font-bold text-amber-700">{{ $gradeA }}</span>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
             @if($tree->status === 'dead')
@@ -37,54 +63,8 @@
             @endif
         </div>
 
-        <!-- Fruit Stats -->
         @if($tree->status === 'alive')
-        <div class="grid grid-cols-4 gap-2 mb-4">
-            @php
-                $total = $tree->fruits()->count();
-                $good = $tree->fruits()->where('condition', 'good')->count();
-                $rotten = $tree->fruits()->where('condition', 'rotten')->count();
-                $gradeA = $tree->fruits()->where('grade', 'A')->count();
-            @endphp
-            <div class="bg-stone-50 rounded-xl p-2.5 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-white text-stone-500 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                </div>
-                <div class="min-w-0">
-                    <div class="text-lg font-bold text-stone-700 leading-tight">{{ $total }}</div>
-                    <div class="text-xs text-stone-400">Total</div>
-                </div>
-            </div>
-            <div class="bg-emerald-50 rounded-xl p-2.5 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-white text-emerald-600 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                </div>
-                <div class="min-w-0">
-                    <div class="text-lg font-bold text-emerald-700 leading-tight">{{ $good }}</div>
-                    <div class="text-xs text-emerald-500">Bagus</div>
-                </div>
-            </div>
-            <div class="bg-red-50 rounded-xl p-2.5 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-white text-red-500 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </div>
-                <div class="min-w-0">
-                    <div class="text-lg font-bold text-red-500 leading-tight">{{ $rotten }}</div>
-                    <div class="text-xs text-red-400">Busuk</div>
-                </div>
-            </div>
-            <div class="bg-amber-50 rounded-xl p-2.5 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-white text-amber-600 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.16c.969 0 1.371 1.24.588 1.81l-3.366 2.445a1 1 0 00-.364 1.118l1.286 3.957c.3.922-.755 1.688-1.539 1.118l-3.366-2.445a1 1 0 00-1.176 0l-3.366 2.445c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.364-1.118L4.063 9.384c-.783-.57-.38-1.81.588-1.81h4.16a1 1 0 00.95-.69l1.286-3.957z"/></svg>
-                </div>
-                <div class="min-w-0">
-                    <div class="text-lg font-bold text-amber-700 leading-tight">{{ $gradeA }}</div>
-                    <div class="text-xs text-amber-500">Grade A</div>
-                </div>
-            </div>
-        </div>
-
-        <a href="{{ route('greenhouse.fruits.create', [$greenhouse, $tree]) }}" class="w-full flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl text-sm transition-colors shadow-lg shadow-emerald-700/20 mb-2">
+        <a href="{{ route('greenhouse.fruits.create', [$greenhouse, $tree]) }}" class="w-full flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl text-sm transition-colors shadow-lg shadow-emerald-700/20 mb-5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Tambah Data Buah
         </a>
@@ -98,11 +78,11 @@
     <!-- Fruit List -->
     @if($tree->fruits->isNotEmpty())
     <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <div class="px-5 py-3 border-b border-stone-100">
+        <div class="px-5 py-4 border-b border-stone-100">
             <h2 class="font-bold text-stone-700 text-sm">Data Buah ({{ $tree->fruits->count() }})</h2>
         </div>
         @foreach($tree->fruits as $fruit)
-        <div class="flex items-center gap-3 px-5 py-3 border-b border-stone-50 last:border-0">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-stone-50 last:border-0">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 {{ $fruit->condition === 'good' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>

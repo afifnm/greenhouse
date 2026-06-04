@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        require base_path('app/helpers.php');
         Paginator::defaultView('components.pagination');
     }
 }

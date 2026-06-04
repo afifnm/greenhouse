@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\GreenhouseController as AdminGreenhouseContro
 use App\Http\Controllers\Api\Admin\MelonVarietyController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Greenhouse\FruitController;
+use App\Http\Controllers\Api\Greenhouse\GreenhouseController;
 use App\Http\Controllers\Api\Greenhouse\MaterialRequestController;
 use App\Http\Controllers\Api\Greenhouse\ReportController;
 use App\Http\Controllers\Api\Greenhouse\TreeController;
@@ -60,12 +61,16 @@ Route::prefix('v1')->group(function () {
 
             // Per-greenhouse
             Route::get('greenhouse/{greenhouse}', [SaleController::class, 'greenhouse']);
+            Route::get('greenhouse/{greenhouse}/sales', [SaleController::class, 'paginatedSales']);
             Route::post('greenhouse/{greenhouse}', [SaleController::class, 'store']);
             Route::get('greenhouse/{greenhouse}/report', [SaleController::class, 'report']);
         });
 
         // ── Greenhouse-scoped (trees, fruits, materials, reports) ────────
         Route::middleware('gh.access')->prefix('greenhouse/{greenhouse}')->group(function () {
+
+            // Hub — greenhouse detail + recent trees
+            Route::get('/', [GreenhouseController::class, 'show']);
 
             // Trees
             Route::apiResource('trees', TreeController::class);

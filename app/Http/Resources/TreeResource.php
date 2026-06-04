@@ -14,7 +14,9 @@ class TreeResource extends JsonResource
             'greenhouse_id' => $this->greenhouse_id,
             'tree_number'   => $this->tree_number,
             'status'        => $this->status,
-            'variety'       => new MelonVarietyResource($this->whenLoaded('variety')),
+            'variety'       => $this->relationLoaded('variety') && $this->variety
+                                    ? new MelonVarietyResource($this->variety)
+                                    : $this->whenLoaded('variety'),
             'fruits_count'  => $this->whenCounted('fruits'),
             'created_at'    => $this->created_at,
         ];

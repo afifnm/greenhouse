@@ -64,7 +64,14 @@ class DashboardController extends Controller
 
     private function managerDashboard($user): JsonResponse
     {
-        $greenhouses = $user->greenhouses()->withCount(['trees', 'sales'])->get();
+        $greenhouses = $user->greenhouses()->withCount([
+            'trees',
+            'trees as alive_trees_count'    => fn($q) => $q->where('status', 'alive'),
+            'sales',
+            'saleItems as fruits_sold_count',
+        ])->withSum('sales', 'total')
+          ->withSum('saleItems', 'weight_kg')
+          ->get();
 
         $greenhouseIds = $greenhouses->pluck('id');
 
@@ -80,7 +87,9 @@ class DashboardController extends Controller
         $gradeAFruits = DB::table('fruits')
             ->join('trees', 'fruits.tree_id', '=', 'trees.id')
             ->whereIn('trees.greenhouse_id', $greenhouseIds)
+            ->where('trees.status', 'alive')
             ->where('fruits.grade', 'A')
+            ->whereDate('fruits.created_at', now()->toDateString())
             ->count();
 
         $deadTreeRate = DB::table('trees')
@@ -97,10 +106,12 @@ class DashboardController extends Controller
         return response()->json([
             'role' => 'manager',
             'stats' => [
-                'today_revenue' => (float) $todayRevenue,
-                'month_revenue' => (float) $monthRevenue,
+                'today_revenue'  => (float) $todayRevenue,
+                'month_revenue'  => (float) $monthRevenue,
                 'grade_a_fruits' => $gradeAFruits,
                 'dead_tree_rate' => $totalTrees > 0 ? round(($deadTrees / $totalTrees) * 100, 1) : 0,
+                'total_trees'    => $totalTrees,
+                'alive_trees'    => $totalTrees - $deadTrees,
             ],
             'greenhouses' => GreenhouseResource::collection($greenhouses),
         ]);

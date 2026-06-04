@@ -65,41 +65,41 @@
     @else
     <!-- Report Table -->
     <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <table class="w-full text-sm">
+        <table class="w-full text-xs sm:text-sm">
             <thead>
                 <tr class="border-b border-stone-200 bg-stone-50">
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-stone-500">#</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-stone-500">Varietas Melon</th>
-                    <th class="text-center px-5 py-3 text-xs font-semibold text-stone-500">Jumlah Transaksi</th>
-                    <th class="text-right px-5 py-3 text-xs font-semibold text-stone-500">Total Berat (kg)</th>
-                    <th class="text-right px-5 py-3 text-xs font-semibold text-stone-500">Total Omset</th>
+                    <th class="text-left px-2 sm:px-5 py-2 sm:py-3 text-xs font-semibold text-stone-500">#</th>
+                    <th class="text-left px-2 sm:px-5 py-2 sm:py-3 text-xs font-semibold text-stone-500">Varietas</th>
+                    <th class="text-center px-2 sm:px-5 py-2 sm:py-3 text-xs font-semibold text-stone-500">Transaksi</th>
+                    <th class="text-right px-2 sm:px-5 py-2 sm:py-3 text-xs font-semibold text-stone-500">Berat (kg)</th>
+                    <th class="text-right px-2 sm:px-5 py-2 sm:py-3 text-xs font-semibold text-stone-500">Omset</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($report as $i => $row)
                 <tr class="border-b border-stone-100 last:border-0 hover:bg-stone-50 transition-colors">
-                    <td class="px-5 py-3.5 text-stone-400 text-xs">{{ $i + 1 }}</td>
-                    <td class="px-5 py-3.5 font-semibold text-stone-800">{{ $row->variety_name }}</td>
-                    <td class="px-5 py-3.5 text-center">
-                        <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold">
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-stone-400 text-xs">{{ $i + 1 }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 font-semibold text-stone-800 text-xs sm:text-sm">{{ $row->variety_name }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-center">
+                        <span class="inline-flex items-center justify-center min-w-[1.5rem] px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold">
                             {{ $row->total_transaksi }}
                         </span>
                     </td>
-                    <td class="px-5 py-3.5 text-right text-stone-700">{{ number_format($row->total_berat, 1, ',', '.') }} kg</td>
-                    <td class="px-5 py-3.5 text-right font-bold text-emerald-700">Rp {{ number_format($row->total_omset, 0, ',', '.') }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-right text-stone-700 text-xs sm:text-sm">{{ number_format($row->total_berat, 1, ',', '.') }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-right font-bold text-emerald-700 text-xs sm:text-sm">Rp {{ number_format($row->total_omset, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr class="bg-emerald-50 border-t-2 border-emerald-200">
-                    <td colspan="2" class="px-5 py-3.5 text-sm font-black text-emerald-800">TOTAL</td>
-                    <td class="px-5 py-3.5 text-center">
-                        <span class="inline-flex items-center justify-center px-2 py-1 rounded-lg bg-emerald-200 text-emerald-800 text-xs font-bold">
+                    <td colspan="2" class="px-2 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm font-black text-emerald-800">TOTAL</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-center">
+                        <span class="inline-flex items-center justify-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-emerald-200 text-emerald-800 text-xs font-bold">
                             {{ $report->sum('total_transaksi') }}
                         </span>
                     </td>
-                    <td class="px-5 py-3.5 text-right text-sm font-black text-emerald-800">{{ number_format($grandWeight, 1, ',', '.') }} kg</td>
-                    <td class="px-5 py-3.5 text-right text-sm font-black text-emerald-800">Rp {{ number_format($grandOmset, 0, ',', '.') }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-right text-xs sm:text-sm font-black text-emerald-800">{{ number_format($grandWeight, 1, ',', '.') }}</td>
+                    <td class="px-2 sm:px-5 py-2 sm:py-3 text-right text-xs sm:text-sm font-black text-emerald-800">Rp {{ number_format($grandOmset, 0, ',', '.') }}</td>
                 </tr>
             </tfoot>
         </table>

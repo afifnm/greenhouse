@@ -34,7 +34,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22V11m0 0c-2.76 0-5-2.24-5-5V4h2c2.76 0 5 2.24 5 5v2zm0 0c2.76 0 5-2.24 5-5V4h-2c-2.76 0-5 2.24-5 5v2zM5 22h14"/></svg>
                 </div>
                 <div class="min-w-0">
-                    <div class="text-xl font-bold text-emerald-700 leading-tight">{{ $greenhouse->trees_count ?? 0 }}</div>
+                    <div class="text-lg font-bold text-emerald-700 leading-tight">{{ $greenhouse->trees_count ?? 0 }}</div>
                     <div class="text-xs text-emerald-600 mt-0.5">Total Pohon</div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <div class="min-w-0">
-                    <div class="text-xl font-bold text-emerald-700 leading-tight">{{ $greenhouse->alive_trees_count ?? 0 }}</div>
+                    <div class="text-lg font-bold text-emerald-700 leading-tight">{{ $greenhouse->alive_trees_count ?? 0 }}</div>
                     <div class="text-xs text-emerald-600 mt-0.5">Hidup</div>
                 </div>
             </div>
@@ -52,18 +52,14 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </div>
                 <div class="min-w-0">
-                    <div class="text-xl font-bold text-red-500 leading-tight">{{ ($greenhouse->trees_count ?? 0) - ($greenhouse->alive_trees_count ?? 0) }}</div>
+                    <div class="text-lg font-bold text-red-500 leading-tight">{{ ($greenhouse->trees_count ?? 0) - ($greenhouse->alive_trees_count ?? 0) }}</div>
                     <div class="text-xs text-red-400 mt-0.5">Mati</div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
-            <a href="{{ route('greenhouse.trees.index', $greenhouse) }}" class="flex flex-col items-center gap-1.5 bg-stone-50 hover:bg-stone-100 rounded-xl py-3 px-2 transition-colors border border-stone-100">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                <span class="text-xs font-semibold text-stone-600">Daftar Pohon</span>
-            </a>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             <a href="{{ route('greenhouse.report', $greenhouse) }}" class="flex flex-col items-center gap-1.5 bg-stone-50 hover:bg-stone-100 rounded-xl py-3 px-2 transition-colors border border-stone-100">
                 <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3v18m4-14v14m4-10v10M7 13v8M3 17v4"/></svg>
                 <span class="text-xs font-semibold text-stone-600">Laporan</span>
@@ -86,15 +82,14 @@
     <!-- Recent Trees (last 5) -->
     @if($greenhouse->trees_count > 0)
     <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-3 border-b border-stone-100">
+        <div class="px-5 py-3 border-b border-stone-100">
             <h2 class="font-bold text-stone-700 text-sm">Pohon Terakhir</h2>
-            <a href="{{ route('greenhouse.trees.index', $greenhouse) }}" class="text-xs text-emerald-700 font-semibold hover:text-emerald-800">Lihat Semua →</a>
         </div>
         @php
             $recentTrees = \App\Models\Tree::where('greenhouse_id', $greenhouse->id)->with('variety')->latest()->take(5)->get();
         @endphp
         @foreach($recentTrees as $tree)
-        <a href="{{ route('greenhouse.trees.show', [$greenhouse, $tree]) }}" class="flex items-center gap-3 px-5 py-3 border-b border-stone-50 last:border-0 hover:bg-stone-50 transition-colors">
+        <a href="{{ route('greenhouse.trees.show', [$greenhouse, $tree]) }}" class="flex items-center gap-3 px-5 py-3 border-b border-stone-50 hover:bg-stone-50 transition-colors">
             <div class="w-10 h-10 rounded-xl {{ $tree->status === 'alive' ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-500' }} flex items-center justify-center shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22V11m0 0c-2.76 0-5-2.24-5-5V4h2c2.76 0 5 2.24 5 5v2zm0 0c2.76 0 5-2.24 5-5V4h-2c-2.76 0-5 2.24-5 5v2zM5 22h14"/></svg>
             </div>
@@ -110,6 +105,10 @@
             <svg class="w-4 h-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
         @endforeach
+        <a href="{{ route('greenhouse.trees.index', $greenhouse) }}" class="flex items-center justify-center gap-2 px-5 py-3 border-t border-stone-100 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 hover:text-emerald-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            <span class="text-sm font-semibold">Lihat Semua Pohon</span>
+        </a>
     </div>
     @else
     <div class="bg-white rounded-2xl p-8 text-center shadow-sm border border-stone-100">

@@ -77,6 +77,18 @@ class SaleController extends Controller
         ]);
     }
 
+    public function paginatedSales(Request $request, Greenhouse $greenhouse): JsonResponse
+    {
+        $this->abortIfCannotAccessSale($request, $greenhouse->id);
+
+        $sales = Sale::with(['user', 'items.melonVariety'])
+            ->where('greenhouse_id', $greenhouse->id)
+            ->latest()
+            ->paginate(15);
+
+        return SaleResource::collection($sales)->response();
+    }
+
     public function store(Request $request, Greenhouse $greenhouse): JsonResponse
     {
         $this->abortIfCannotAccessSale($request, $greenhouse->id);

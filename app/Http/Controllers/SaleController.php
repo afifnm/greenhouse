@@ -80,8 +80,7 @@ class SaleController extends Controller
         $recentSales = Sale::with(['user', 'items.melonVariety'])
             ->where('greenhouse_id', $greenhouse->id)
             ->latest()
-            ->take(10)
-            ->get();
+            ->paginate(15);
 
         return view('sales.greenhouse', compact(
             'greenhouse',

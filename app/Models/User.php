@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Sale::class);
     }
 
+    public function settings(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Models\Setting::class);
+    }
+
     public function isActive(): bool
     {
         return (bool) $this->is_active;

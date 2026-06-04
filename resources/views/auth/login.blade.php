@@ -31,6 +31,7 @@
 
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
+                <input type="hidden" name="_webview" id="_webview_flag" value="0">
                 <div>
                     <label class="block text-sm font-medium text-stone-600 mb-1.5">Email / No. HP</label>
                     <input type="text" name="login" value="{{ old('login') }}" required autofocus
@@ -54,4 +55,13 @@
         </p>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+        document.getElementById('_webview_flag').value = '1';
+    }
+</script>
+@endpush
+
 @endsection
