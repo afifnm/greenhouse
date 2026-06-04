@@ -17,6 +17,9 @@ class GreenhouseAccessMiddleware
 
         $hasAccess = $request->user()->greenhouses()->where('id', $greenhouse->id)->exists();
         if (!$hasAccess) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Anda tidak memiliki akses ke greenhouse ini.'], 403);
+            }
             return response()->view('errors.403', ['message' => 'Anda tidak memiliki akses ke greenhouse ini.'], 403);
         }
 
