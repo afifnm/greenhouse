@@ -34,7 +34,7 @@
             @enderror
         </div>
 
-        <!-- Items Table -->
+        <!-- Items Card List -->
         <div class="mb-4">
             <div class="flex items-center justify-between mb-3">
                 <label class="text-sm font-bold text-stone-700">Item Penjualan</label>
@@ -45,70 +45,68 @@
                 </button>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-stone-200">
-                            <th class="text-left py-2 pr-3 text-xs font-semibold text-stone-500 w-1/2">Varietas</th>
-                            <th class="text-right py-2 pr-3 text-xs font-semibold text-stone-500 w-24">Berat (kg)</th>
-                            <th class="text-right py-2 pr-3 text-xs font-semibold text-stone-500 w-28">Harga/kg (Rp)</th>
-                            <th class="text-right py-2 text-xs font-semibold text-stone-500 w-32">Subtotal</th>
-                            <th class="w-8"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="sale-items-body">
-                        @php
-                            $oldItems = old('sale_items', [[
-                                'melon_variety_id' => '',
-                                'weight_kg' => '',
-                                'price_per_kg' => '',
-                            ]]);
-                        @endphp
-                        @foreach($oldItems as $i => $oldItem)
-                        <tr class="sale-row border-b border-stone-100">
-                            <td class="py-2 pr-3">
-                                <select name="sale_items[{{ $i }}][melon_variety_id]" required
-                                    class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none bg-white @error('sale_items.' . $i . '.melon_variety_id') border-red-400 @enderror">
-                                    <option value="">Pilih varietas</option>
-                                    @foreach($varieties as $v)
-                                        <option value="{{ $v->id }}" {{ (string) $oldItem['melon_variety_id'] === (string) $v->id ? 'selected' : '' }}>{{ $v->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('sale_items.' . $i . '.melon_variety_id')
-                                    <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>
-                                @enderror
-                            </td>
-                            <td class="py-2 pr-3">
-                                <input type="number" name="sale_items[{{ $i }}][weight_kg]" data-weight
-                                    placeholder="0.0" step="0.001" min="0" required
-                                    class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none @error('sale_items.' . $i . '.weight_kg') border-red-400 @enderror"
-                                    value="{{ $oldItem['weight_kg'] ?? '' }}">
-                                @error('sale_items.' . $i . '.weight_kg')
-                                    <p class="text-red-500 text-xs mt-0.5 text-right">{{ $message }}</p>
-                                @enderror
-                            </td>
-                            <td class="py-2 pr-3">
-                                <input type="number" name="sale_items[{{ $i }}][price_per_kg]" data-price
-                                    placeholder="0" min="0" required
-                                    class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none @error('sale_items.' . $i . '.price_per_kg') border-red-400 @enderror"
-                                    value="{{ $oldItem['price_per_kg'] ?? '' }}">
-                                @error('sale_items.' . $i . '.price_per_kg')
-                                    <p class="text-red-500 text-xs mt-0.5 text-right">{{ $message }}</p>
-                                @enderror
-                            </td>
-                            <td class="py-2 text-right">
-                                <span class="subtotal-display text-emerald-700 font-semibold text-sm">Rp 0</span>
-                            </td>
-                            <td class="py-2 text-center">
-                                <button type="button" onclick="removeRow(this)"
-                                    class="w-7 h-7 flex items-center justify-center rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 transition-colors text-lg leading-none">
-                                    &times;
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="space-y-2" id="sale-items-body">
+                @php
+                    $oldItems = old('sale_items', [[
+                        'melon_variety_id' => '',
+                        'weight_kg' => '',
+                        'price_per_kg' => '',
+                    ]]);
+                @endphp
+                @foreach($oldItems as $i => $oldItem)
+                <div class="sale-row bg-white rounded-lg border border-stone-200 p-3 space-y-2">
+                    <!-- Row 1: Varietas -->
+                    <div class="flex items-start gap-2">
+                        <div class="flex-1">
+                            <select name="sale_items[{{ $i }}][melon_variety_id]" required
+                                class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none bg-white @error('sale_items.' . $i . '.melon_variety_id') border-red-400 @enderror">
+                                <option value="">Pilih varietas</option>
+                                @foreach($varieties as $v)
+                                    <option value="{{ $v->id }}" {{ (string) $oldItem['melon_variety_id'] === (string) $v->id ? 'selected' : '' }}>{{ $v->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('sale_items.' . $i . '.melon_variety_id')
+                                <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <button type="button" onclick="removeRow(this)"
+                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors border border-red-200 shrink-0">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Hapus
+                        </button>
+                    </div>
+
+                    <!-- Row 2: Berat & Harga -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs text-stone-500 font-medium mb-0.5 block">Berat (kg)</label>
+                            <input type="number" name="sale_items[{{ $i }}][weight_kg]" data-weight
+                                placeholder="0" step="0.01" min="0" required
+                                class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none @error('sale_items.' . $i . '.weight_kg') border-red-400 @enderror"
+                                value="{{ $oldItem['weight_kg'] ?? '' }}">
+                            @error('sale_items.' . $i . '.weight_kg')
+                                <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="text-xs text-stone-500 font-medium mb-0.5 block">Harga/kg (Rp)</label>
+                            <input type="number" name="sale_items[{{ $i }}][price_per_kg]" data-price
+                                placeholder="0" min="0" required
+                                class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none @error('sale_items.' . $i . '.price_per_kg') border-red-400 @enderror"
+                                value="{{ $oldItem['price_per_kg'] ?? '' }}">
+                            @error('sale_items.' . $i . '.price_per_kg')
+                                <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Subtotal -->
+                    <div class="flex items-center justify-between pt-2 border-t border-stone-100">
+                        <span class="text-xs text-stone-500 font-medium">Subtotal</span>
+                        <span class="subtotal-display text-emerald-700 font-semibold text-sm">Rp 0</span>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
 
@@ -120,12 +118,17 @@
             </div>
         </div>
 
-        <!-- Submit -->
-        <div class="flex justify-end">
-            <button type="submit"
-                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition-colors shadow-sm">
+        <!-- Submit Buttons -->
+        <div class="flex justify-end gap-3">
+            <button type="submit" name="action" value="pay_later"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-600 hover:bg-stone-700 text-white font-bold text-sm transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                Simpan Penjualan
+                Bayar 
+            </button>
+            <button type="submit" name="action" value="pay_and_print"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H9a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2m-6 4a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                Bayar & Print
             </button>
         </div>
     </form>
@@ -133,36 +136,47 @@
 
 <!-- Template for dynamically added rows -->
 <template id="row-template">
-    <tr class="sale-row border-b border-stone-100">
-        <td class="py-2 pr-3">
-            <select name="sale_items[N][melon_variety_id]" required
-                class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none bg-white">
-                <option value="">Pilih varietas</option>
-                @foreach($varieties as $v)
-                    <option value="{{ $v->id }}">{{ $v->name }}</option>
-                @endforeach
-            </select>
-        </td>
-        <td class="py-2 pr-3">
-            <input type="number" name="sale_items[N][weight_kg]" data-weight
-                placeholder="0.0" step="0.001" min="0" required
-                class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
-        </td>
-        <td class="py-2 pr-3">
-            <input type="number" name="sale_items[N][price_per_kg]" data-price
-                placeholder="0" min="0" required
-                class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
-        </td>
-        <td class="py-2 text-right">
-            <span class="subtotal-display text-emerald-700 font-semibold text-sm">Rp 0</span>
-        </td>
-        <td class="py-2 text-center">
+    <div class="sale-row bg-white rounded-lg border border-stone-200 p-3 space-y-2">
+        <!-- Row 1: Varietas -->
+        <div class="flex items-start gap-2">
+            <div class="flex-1">
+                <select name="sale_items[N][melon_variety_id]" required
+                    class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none bg-white">
+                    <option value="">Pilih varietas</option>
+                    @foreach($varieties as $v)
+                        <option value="{{ $v->id }}">{{ $v->name }}</option>
+                    @endforeach
+                </select>
+            </div>
             <button type="button" onclick="removeRow(this)"
-                class="w-7 h-7 flex items-center justify-center rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 transition-colors text-lg leading-none">
-                &times;
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors border border-red-200 shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Hapus
             </button>
-        </td>
-    </tr>
+        </div>
+
+        <!-- Row 2: Berat & Harga -->
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="text-xs text-stone-500 font-medium mb-0.5 block">Berat (kg)</label>
+                <input type="number" name="sale_items[N][weight_kg]" data-weight
+                    placeholder="0" step="0.01" min="0" required
+                    class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
+            </div>
+            <div>
+                <label class="text-xs text-stone-500 font-medium mb-0.5 block">Harga/kg (Rp)</label>
+                <input type="number" name="sale_items[N][price_per_kg]" data-price
+                    placeholder="0" min="0" required
+                    class="w-full text-xs border border-stone-200 rounded-lg px-2 py-1.5 text-right focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none">
+            </div>
+        </div>
+
+        <!-- Subtotal -->
+        <div class="flex items-center justify-between pt-2 border-t border-stone-100">
+            <span class="text-xs text-stone-500 font-medium">Subtotal</span>
+            <span class="subtotal-display text-emerald-700 font-semibold text-sm">Rp 0</span>
+        </div>
+    </div>
 </template>
 
 @endsection

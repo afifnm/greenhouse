@@ -109,13 +109,26 @@
 
     <div class="no-print">
         @if($sale->greenhouse)
-        <a href="{{ route('sales.greenhouse', $sale->greenhouse) }}" class="back-link">← Kembali</a>
+        <a href="{{ route('sales.greenhouse', $sale->greenhouse) }}" class="back-link">← Kembali ke Kasir</a>
         @else
         <a href="{{ route('sales.index') }}" class="back-link">← Kembali</a>
         @endif
         <br>
         <button onclick="window.print()">🖨 Cetak Sekarang</button>
+        @if(session('auto_print'))
+        <div style="font-size: 12px; color: #666; margin-top: 8px;">
+            Printer sedang memproses...
+        </div>
+        @endif
     </div>
+
+    @if(session('auto_print'))
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => window.print(), 500);
+        });
+    </script>
+    @endif
 
     <div class="receipt">
 

@@ -107,6 +107,7 @@ class SaleController extends Controller
             'sale_items.*.melon_variety_id' => 'required|exists:melon_varieties,id',
             'sale_items.*.weight_kg' => 'required|numeric|min:0.001',
             'sale_items.*.price_per_kg' => 'required|numeric|min:0',
+            'action' => 'required|in:pay_later,pay_and_print',
         ]);
 
         // Compute total server-side — never trust the form
@@ -132,6 +133,12 @@ class SaleController extends Controller
 
         foreach ($items as $item) {
             $sale->items()->create($item);
+        }
+
+        if ($validated['action'] === 'pay_and_print') {
+            return redirect()
+                ->route('sales.print', $sale)
+                ->with('auto_print', true);
         }
 
         return redirect()
